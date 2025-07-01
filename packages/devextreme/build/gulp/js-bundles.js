@@ -15,6 +15,7 @@ const ctx = require('./context.js');
 const headerPipes = require('./header-pipes.js');
 const webpackConfig = require('../../webpack.config.js');
 const env = require('./env-variables.js');
+const { STATE_MANAGER_INDEX_MODULE_PATH, STATE_MANAGER_PRODUCTION_MODULE_PATH } = require('./state_manager/constants');
 
 const namedDebug = lazyPipe()
     .pipe(named, (file) => path.basename(file.path, path.extname(file.path)) + '.debug');
@@ -29,15 +30,24 @@ const DEBUG_BUNDLES = BUNDLES.concat([ '/bundles/dx.custom.js' ]);
 
 const processBundles = (bundles, pathPrefix) => bundles.map((bundle) => pathPrefix + bundle);
 const muteWebPack = () => undefined;
-const getWebpackConfig = () => env.BUILD_INTERNAL_PACKAGE || env.BUILD_TEST_INTERNAL_PACKAGE ?
-    Object.assign({
-        plugins: [
-            new webpack.NormalModuleReplacementPlugin(/(.*)\/license_validation/, resource => {
-                resource.request = resource.request.replace('license_validation', 'license_validation_internal');
-            })
-        ]
-    }, webpackConfig) :
-    webpackConfig;
+const getWebpackConfig = (watch) => {
+    const plugins = [];
+    const isInternalBuild = env.BUILD_INTERNAL_PACKAGE || env.BUILD_TEST_INTERNAL_PACKAGE;
+
+    if (isInternalBuild) {
+        plugins.push(new webpack.NormalModuleReplacementPlugin(/(.*)\/license_validation/, resource => {
+            resource.request = resource.request.replace('license_validation', 'license_validation_internal');
+        }));
+    }
+
+    if (watch) {
+        plugins.push(new webpack.NormalModuleReplacementPlugin(/(.*)\/reactive/,(resource) => {
+            resource.request = resource.request.replace('reactive/index', 'reactive/development');
+        }));
+    }
+
+    return Object.assign(webpackConfig, { plugins });
+};
 
 const bundleProdPipe = lazyPipe()
     .pipe(named)
@@ -59,7 +69,7 @@ gulp.task('js-bundles-prod',
 );
 
 function prepareDebugMeta(watch) {
-    const debugConfig = Object.assign({ watch }, getWebpackConfig());
+    const debugConfig = Object.assign({ watch }, getWebpackConfig(watch));
     const bundlesPath = ctx.TRANSPILED_PROD_RENOVATION_PATH;
 
     const bundles = processBundles(DEBUG_BUNDLES, bundlesPath);
