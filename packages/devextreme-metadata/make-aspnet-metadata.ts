@@ -1,5 +1,5 @@
-import { AspNet, Mutation } from 'devextreme-internal-tools/metadata';
-import { addMember, cleanArtifacts, removeMembers, types } from './common';
+import { AspNet, Mutation, addMember, removeMembers } from 'devextreme-internal-tools/metadata';
+import { cleanArtifacts, types } from './common';
 import { commonSmdCollectionItems } from './common/smd';
 import { enums, enumAliases, enumItemRenamings } from './aspnet/enums'
 import { PATHS } from './common/paths';
@@ -14,7 +14,7 @@ AspNet.makeMetadata({
   mutations: [
     removeMembers(/\/ai-integration:AIIntegration/),
     removeMembers(/\/html_editor:AICommand/),
-    ...replaceWithWidgetFactory({
+    replaceWithWidgetFactory({
       uid: 'ui/form:dxFormSimpleItem',
       from: {
         componentNameProp: 'editorType',
@@ -25,7 +25,7 @@ AspNet.makeMetadata({
         newProp: 'editor',
       },
     }),
-    ...replaceWithWidgetFactory({
+    replaceWithWidgetFactory({
       uid: 'ui/toolbar:dxToolbarItem',
       from: {
         componentNameProp: 'widget',
@@ -43,7 +43,7 @@ AspNet.makeMetadata({
     }),
     addMember({
       uid: 'ui/popover:dxPopoverOptions.toolbarItems',
-      types: [types.array(types.memberRef('ui/popover:ToolbarItem'))],
+      types: [types.array(types.uidRef('ui/popover:ToolbarItem'))],
     }),
     removeMembers(/ui\/scheduler:ToolbarItem\.options/),
   ],
@@ -81,12 +81,8 @@ function replaceWithWidgetFactory({
   };
 }): Mutation<AspNet.WidgetFactory>[] {
   return [
-    {
-      kind: 'remove',
-      uid: new RegExp(`${uid}\\.(${componentNameProp}|${componentConfigProp})`),
-    },
-    {
-      kind: 'add',
+    removeMembers(new RegExp(`${uid}\\.(${componentNameProp}|${componentConfigProp})`)),
+    addMember({
       uid: `${uid}.${newProp}`,
       types: [
         {
@@ -99,6 +95,6 @@ function replaceWithWidgetFactory({
           },
         },
       ],
-    },
+    })
   ];
 }

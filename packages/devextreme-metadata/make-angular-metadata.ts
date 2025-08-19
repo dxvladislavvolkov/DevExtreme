@@ -1,5 +1,5 @@
-import { Ng } from 'devextreme-internal-tools/metadata';
-import { cleanArtifacts, removeMembers } from './common';
+import { Ng, removeMembers } from 'devextreme-internal-tools/metadata';
+import { cleanArtifacts } from './common';
 import { commonSmdCollectionItems } from './common/smd';
 import { NG_SMD_FILE, PATHS } from './common/paths';
 
