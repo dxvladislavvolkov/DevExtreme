@@ -1,4 +1,4 @@
-import { Imd, addMetadata, replaceTypes, removeMembers } from 'devextreme-internal-tools/metadata';
+import {Imd, addMetadata, replaceTypes, removeMembers} from 'devextreme-internal-tools/metadata';
 import { cleanArtifacts, types } from './common';
 import { IMD_FILE, PATHS } from './common/paths';
 
@@ -9,14 +9,9 @@ Imd.makeMetadata({
     artifacts: PATHS.artifactsDir,
   },
   mutations: [
-    replaceTypes({
-      uid: 'ui/card_view:dxCardViewOptions.filterBuilderPopup',
-      types: [types.object],
-    }),
-    replaceTypes({
-      uid: 'ui/card_view:Editing.popup',
-      types: [types.object],
-    }),
+    replaceTypes('ui/card_view:dxCardViewOptions.filterBuilderPopup', ["*"], ['object']),
+    replaceTypes('ui/card_view:Editing.popup', ["*"], ['object']),
+
     removeMembers("core/dom_component:DOMComponentOptions.bindingOptions"),
 
     addMetadata(

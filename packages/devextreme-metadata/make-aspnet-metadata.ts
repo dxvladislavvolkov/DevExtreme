@@ -1,4 +1,4 @@
-import { AspNet, Mutation, addMember, removeMembers } from 'devextreme-internal-tools/metadata';
+import { AspNet, Mutation, addMember, removeMembers, replaceTypes } from 'devextreme-internal-tools/metadata';
 import { cleanArtifacts, types } from './common';
 import { commonSmdCollectionItems } from './common/smd';
 import { enums, enumAliases, enumItemRenamings } from './aspnet/enums'
@@ -12,8 +12,35 @@ AspNet.makeMetadata({
     artifacts: PATHS.artifactsDir,
   },
   mutations: [
-    removeMembers(/\/ai-integration:AIIntegration/),
-    removeMembers(/\/html_editor:AICommand/),
+    replaceTypes(
+      [
+        "ui/autocomplete:dxAutocompleteOptions.minSearchLength",
+        "ui/drop_down_editor/ui.drop_down_list:dxDropDownListOptions.minSearchLength",
+        "ui/html_editor:dxHtmlEditorMention.minSearchLength"
+      ],
+      ['number'],
+      ['int']
+    ),
+    replaceTypes(
+      /\.\w*[Cc]ount$/,
+      ['number'],
+      ['int']
+    ),
+    // For some reason, this property was kept 'string' by the previous transformer.
+    // In order to avoid changes in the generated code, we remove the `int` type
+    // that was added on the previous step.
+    replaceTypes(
+      "ui/data_grid:SummaryTexts.count",
+      ['int'],
+      []
+    ),
+    replaceTypes(
+      "viz/chart_components/base_chart:BaseChartOptions.animation.maxPointCountSupported",
+      ['number'],
+      ['int']
+    ),
+    removeMembers("common/ai-integration:AIIntegration"),
+    removeMembers( "ui/html_editor:AICommand(|Base|NameExtended|Name)"),
     replaceWithWidgetFactory({
       uid: 'ui/form:dxFormSimpleItem',
       from: {
@@ -45,7 +72,7 @@ AspNet.makeMetadata({
       uid: 'ui/popover:dxPopoverOptions.toolbarItems',
       types: [types.array(types.uidRef('ui/popover:ToolbarItem'))],
     }),
-    removeMembers(/ui\/scheduler:ToolbarItem\.options/),
+    removeMembers("ui/scheduler:ToolbarItem.options"),
   ],
   variables: {
     forwardedEnums: [
@@ -81,7 +108,7 @@ function replaceWithWidgetFactory({
   };
 }): Mutation<AspNet.WidgetFactory>[] {
   return [
-    removeMembers(new RegExp(`${uid}\\.(${componentNameProp}|${componentConfigProp})`)),
+    removeMembers(`${uid}.(${componentNameProp}|${componentConfigProp})`),
     addMember({
       uid: `${uid}.${newProp}`,
       types: [
