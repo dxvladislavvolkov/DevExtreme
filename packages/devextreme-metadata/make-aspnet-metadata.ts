@@ -14,31 +14,30 @@ AspNet.makeMetadata({
   mutations: [
     replaceTypes(
       [
+        // 'Length' can be added to the next mutation's regex, but it in that case it affects
+        // 'arrowLength' and 'edgeLength' properties, which is probably a right thing to do,
+        // but it changes the existing behavior.
+        // Another pattern might be /\.(max|min)[A-Z]\w+$/ but it affects even more properties.
         "ui/autocomplete:dxAutocompleteOptions.minSearchLength",
         "ui/drop_down_editor/ui.drop_down_list:dxDropDownListOptions.minSearchLength",
-        "ui/html_editor:dxHtmlEditorMention.minSearchLength"
+        "ui/html_editor:dxHtmlEditorMention.minSearchLength",
+
+        'ui/tag_box:dxTagBoxOptions.maxFilterQueryLength',
+        "ui/scheduler:dxSchedulerOptions(.|.views.)maxAppointmentsPerCell",
+        "viz/chart_components/base_chart:BaseChartOptions.animation.maxPointCountSupported",
       ],
       ['number'],
       ['int']
     ),
     replaceTypes(
-      /\.\w*[Cc]ount$/,
+      /(?:Count|[Ii]ndex|\.maxAppointmentsPerCell|\.hidingPriority|\.pageSize|\.lg|\.md|\.sm|\.xs|\.col[Ss]pan|\.row[Ss]pan)$/,
       ['number'],
       ['int']
     ),
-    // For some reason, this property was kept 'string' by the previous transformer.
-    // In order to avoid changes in the generated code, we remove the `int` type
-    // that was added on the previous step.
-    replaceTypes(
-      "ui/data_grid:SummaryTexts.count",
-      ['int'],
-      []
-    ),
-    replaceTypes(
-      "viz/chart_components/base_chart:BaseChartOptions.animation.maxPointCountSupported",
-      ['number'],
-      ['int']
-    ),
+
+    // This isn't the pageSize you're looking for. Rollback.
+    replaceTypes("ui/diagram:dxDiagramOptions.pageSize", ["int"], []),
+
     removeMembers("common/ai-integration:AIIntegration"),
     removeMembers( "ui/html_editor:AICommand(|Base|NameExtended|Name)"),
     replaceWithWidgetFactory({
