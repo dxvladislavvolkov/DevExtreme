@@ -35,6 +35,64 @@ AspNet.makeMetadata({
       ['int']
     ),
 
+    replaceTypes(
+      "ui/pivot_grid:dxPivotGridOptions.dataSource",
+      ['*'],
+      [
+        types.uidRef("ui/pivot_grid/data_source:PivotGridDataSource"),
+      ]
+    ),
+
+    replaceTypes(
+      [
+        "viz/chart:ArgumentAxis.workWeek",
+        "viz/range_selector:dxRangeSelectorOptions.scale.workWeek",
+      ],
+      ['number[]'],
+      ['int[]']
+    ),
+
+    replaceTypes(
+      /\.disabledDates$/,
+      ['*'],
+      [
+        // | ((data: DevExpress.ui.dxCalendar.DisabledDate) => boolean);
+        {
+          kind: "function",
+          params: [
+            {
+              name: "data",
+              types: [types.uidRef("ui/calendar:DisabledDate")]
+            }
+          ],
+          returnTypes: [
+            { kind: "boolean" }
+          ]
+        },
+        // | Array<Date>
+        'date[]',
+      ]
+    ),
+
+    replaceTypes(
+      [
+        "ui/color_box:dxColorBoxOptions.maxLength",
+        "ui/date_box:dxDateBoxOptions.maxLength",
+        "ui/date_range_box:dxDateRangeBoxOptions.maxLength",
+        "ui/lookup:dxLookupOptions.maxLength",
+        "ui/scheduler:dxSchedulerOptions.cellDuration",
+        "ui/scheduler:dxSchedulerOptions.views.agendaDuration",
+        "ui/scheduler:dxSchedulerOptions.views.cellDuration",
+        "ui/text_box:dxTextBoxOptions.maxLength",
+        "common/grids:ColumnBase.ownerBand",
+        "ui/responsive_box:dxResponsiveBoxItem.location.col",
+        "ui/responsive_box:dxResponsiveBoxItem.location.row",
+        "ui/tag_box:dxTagBoxOptions.maxDisplayedTags",
+      ],
+      ['number', 'string'],
+      ['int']
+    ),
+
     // This isn't the pageSize you're looking for. Rollback.
     replaceTypes("ui/diagram:dxDiagramOptions.pageSize", ["int"], []),
 
