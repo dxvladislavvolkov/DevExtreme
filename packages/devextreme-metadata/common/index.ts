@@ -21,8 +21,8 @@ export const types = {
     return { kind: 'array', itemTypes };
   },
 
-  uidRef(uid: string): DataTypes.UidRef {
-    return { kind: 'uidRef', uid };
+  uidRef(uid: string, ambient: boolean = false): DataTypes.UidRef {
+    return { kind: 'uidRef', uid, ambient };
   },
 
   object: { kind: 'object' } as DataTypes.Object,
