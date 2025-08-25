@@ -25,6 +25,8 @@ AspNet.makeMetadata({
         'ui/tag_box:dxTagBoxOptions.maxFilterQueryLength',
         "ui/scheduler:dxSchedulerOptions(.|.views.)maxAppointmentsPerCell",
         "viz/chart_components/base_chart:BaseChartOptions.animation.maxPointCountSupported",
+
+        "ui/data_grid:SortByGroupSummaryInfoItem.summaryItem",
       ],
       ['number'],
       ['int']
@@ -53,7 +55,7 @@ AspNet.makeMetadata({
     ),
 
     replaceTypes(
-      /\.disabledDates$/,
+      "ui/(calendar:dxCalendar|date_box:dxDateBox)Options.disabledDates",
       ['*'],
       [
         // | ((data: DevExpress.ui.dxCalendar.DisabledDate) => boolean);
@@ -81,12 +83,10 @@ AspNet.makeMetadata({
         "ui/date_range_box:dxDateRangeBoxOptions.maxLength",
         "ui/lookup:dxLookupOptions.maxLength",
         "ui/scheduler:dxSchedulerOptions.cellDuration",
-        "ui/scheduler:dxSchedulerOptions.views.agendaDuration",
-        "ui/scheduler:dxSchedulerOptions.views.cellDuration",
+        "ui/scheduler:dxSchedulerOptions.views.(agenda|cell)Duration",
         "ui/text_box:dxTextBoxOptions.maxLength",
         "common/grids:ColumnBase.ownerBand",
-        "ui/responsive_box:dxResponsiveBoxItem.location.col",
-        "ui/responsive_box:dxResponsiveBoxItem.location.row",
+        "ui/responsive_box:dxResponsiveBoxItem.location.(col|row)",
         "ui/tag_box:dxTagBoxOptions.maxDisplayedTags",
       ],
       ['number', 'string'],
@@ -95,6 +95,23 @@ AspNet.makeMetadata({
 
     // This isn't the pageSize you're looking for. Rollback.
     replaceTypes("ui/diagram:dxDiagramOptions.pageSize", ["int"], []),
+
+    replaceTypes(
+      [
+        "common/grids:Pager.allowedPageSizes",
+        "ui/pagination:dxPaginationOptions.allowedPageSizes",
+      ],
+      ["*"],
+      ["int[]"],
+    ),
+
+    replaceTypes(
+      [
+        "ui/validator:dxValidatorOptions.adapter.validationRequestsCallbacks",
+      ],
+      ["*"],
+      ["any[]"],
+    ),
 
     removeMembers("common/ai-integration:AIIntegration"),
     removeMembers( "ui/html_editor:AICommand(|Base|NameExtended|Name)"),
