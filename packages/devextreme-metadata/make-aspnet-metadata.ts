@@ -128,6 +128,7 @@ AspNet.makeMetadata({
       ["ui/popup:dxPopupOptions", "ui/autocomplete:dxAutocompleteOptions.dropDownOptions"],
       ["ui/popup:dxPopupOptions", "ui/card_view:Editing.popup"],
       ["ui/popup:dxPopupOptions", "ui/card_view:dxCardViewOptions.filterBuilderPopup"],
+      ["ui/popup:dxPopupOptions", "ui/color_box:dxColorBoxOptions.dropDownOptions"],
       ["ui/popup:dxPopupOptions", "ui/date_box:DateBoxBaseOptions.dropDownOptions"],
       ["ui/popup:dxPopupOptions", "ui/drop_down_box:dxDropDownBoxOptions.dropDownOptions"],
       ["ui/popup:dxPopupOptions", "ui/drop_down_button:dxDropDownButtonOptions.dropDownOptions"],
